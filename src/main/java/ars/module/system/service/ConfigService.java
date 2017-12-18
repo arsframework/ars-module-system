@@ -49,7 +49,7 @@ public interface ConfigService<T extends Config> extends Service<T> {
 	 * 
 	 * @param requester
 	 *            请求对象
-	 * @param key
+	 * @param keys
 	 *            键
 	 * @param parameters
 	 *            请求参数

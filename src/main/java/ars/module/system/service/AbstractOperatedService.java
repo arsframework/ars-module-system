@@ -33,15 +33,12 @@ public abstract class AbstractOperatedService<T extends Operated> extends Standa
 	}
 
 	/**
-	 * 记录删除数据
+	 * 记录操作日志
 	 * 
 	 * @param requester
 	 *            请求对象
-	 * @param entity
-	 *            对象实例
-	 * @param different
-	 *            差异属性值
-	 * @return 数据更新记录实例
+	 * @param value
+	 *            请求结果
 	 */
 	protected void record(Requester requester, Object value) {
 		boolean failed = value instanceof Throwable;

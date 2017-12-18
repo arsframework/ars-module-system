@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="ars.module.system.model.Recycle" table="ARS_SYSTEM_RECYCLE">
+		<id name="id" column="ID_" type="int">
+			<generator class="native"/>
+		</id>
+		<property name="name" column="NAME_" type="string" length="50" not-null="true"/>
+		<property name="model" column="MODEL_" type="string" length="100" not-null="true"/>
+		<property name="entity" column="ENTITY_" type="serializable" not-null="true"/>
+		<many-to-one name="recyclable" column="RECYCLABLE_ID_" class="ars.module.system.model.Recyclable" fetch="join" lazy="false"/>
+		<property name="order" column="ORDER_" type="double"/>
+		<property name="status" column="STATUS_" type="int" not-null="true"/>
+		<property name="active" column="ACTIVE_" type="boolean" not-null="true"/>
+		<property name="remark" column="REMARK_" type="string" length="50"/>
+		<property name="creator" column="CREATOR_" type="string" length="50"/>
+		<property name="updater" column="UPDATER_" type="string" length="50"/>
+		<property name="process" column="PROCESS_" type="string" length="50"/>
+		<property name="dateJoined" column="DATE_JOINED_" type="timestamp" not-null="true"/>
+		<property name="dateUpdate" column="DATE_UPDATE_" type="timestamp"/>
+	</class>
+</hibernate-mapping>

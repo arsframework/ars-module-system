@@ -32,18 +32,26 @@ public abstract class AbstractModifiedService<T extends Modified> extends Standa
 		this.path = path;
 	}
 
-	@Override
-	public T record(Requester requester, Object entity, Map<String, Object[]> different) {
+	/**
+	 * 记录删除数据
+	 * 
+	 * @param requester
+	 *            请求对象
+	 * @param entity
+	 *            对象实例
+	 * @param different
+	 *            差异属性值
+	 * @return 数据更新记录实例
+	 */
+	protected void record(Requester requester, Object entity, Map<String, Object[]> different) {
 		if (!different.isEmpty()) {
 			String primary = this.getRepository().getPrimary();
 			T modified = Beans.getInstance(this.getModel());
 			modified.setKey(Beans.getValue(entity, primary).toString());
 			modified.setModel(entity.getClass().getName());
 			modified.setDifferent(different);
-			modified.setId((Integer) this.saveObject(requester, modified));
-			return modified;
+			this.saveObject(requester, modified);
 		}
-		return null;
 	}
 
 	@Override

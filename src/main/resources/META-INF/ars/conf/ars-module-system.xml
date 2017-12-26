@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+	<!-- System module configuration -->
+	
+	<!-- Menu Repository -->
+	<bean class="ars.module.system.repository.StandardMenuRepository"/>
+	
+	<!-- Config Repository -->
+	<bean class="ars.module.system.repository.StandardConfigRepository"/>
+	
+	<!-- Recycle Repository -->
+	<bean class="ars.module.system.repository.StandardRecycleRepository"/>
+	
+	<!-- Operated Repository -->
+	<bean class="ars.module.system.repository.StandardOperatedRepository"/>
+	
+	<!-- Recyclable Repository -->
+	<bean class="ars.module.system.repository.StandardRecyclableRepository"/>
+	
+	<!-- Attachment Repository -->
+	<bean class="ars.module.system.repository.StandardAttachmentRepository"/>
+	
+	<!-- Menu Service -->
+	<bean class="ars.module.system.service.StandardMenuService"/>
+	
+	<!-- Config Service -->
+	<bean class="ars.module.system.service.StandardConfigService"/>
+	
+	<!-- Recycle Service -->
+	<bean class="ars.module.system.service.StandardRecycleService"/>
+	
+	<!-- Operated Service -->
+	<bean class="ars.module.system.service.StandardOperatedService"/>
+	
+	<!-- Recyclable Service -->
+	<bean class="ars.module.system.service.StandardRecyclableService"/>
+	
+	<!-- Attachment Service -->
+	<bean class="ars.module.system.service.StandardAttachmentService">
+		<property name="defaultOperator">
+			<bean class="ars.file.DiskOperator"/>
+		</property>
+	</bean>
+</beans>

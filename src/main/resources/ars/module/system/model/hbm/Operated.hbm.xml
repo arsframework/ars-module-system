@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="ars.module.system.model.Operated" table="ARS_SYSTEM_OPERATED">
+		<id name="id" column="ID_" type="int">
+			<generator class="native"/>
+		</id>
+		<property name="user" column="USER_" type="string" length="50"/>
+		<property name="parameter" column="PARAMETER_" type="text"/>
+		<property name="message" column="MESSAGE_" type="text"/>
+		<property name="host" column="HOST_" type="string" length="50" not-null="true"/>
+		<property name="uri" column="URI_" type="string" length="100" not-null="true"/>
+		<property name="spend" column="SPEND_" type="long" not-null="true"/>
+		<property name="success" column="SUCCESS_" type="boolean" not-null="true"/>
+		<property name="dateJoined" column="DATE_JOINED_" type="timestamp" not-null="true"/>
+	</class>
+</hibernate-mapping>

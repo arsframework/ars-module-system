@@ -41,7 +41,6 @@ public abstract class AbstractModifiedService<T extends Modified> extends Standa
 	 *            对象实例
 	 * @param different
 	 *            差异属性值
-	 * @return 数据更新记录实例
 	 */
 	protected void record(Requester requester, Object entity, Map<String, Object[]> different) {
 		if (!different.isEmpty()) {

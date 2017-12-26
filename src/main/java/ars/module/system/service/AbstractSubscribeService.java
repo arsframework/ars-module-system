@@ -97,7 +97,7 @@ public abstract class AbstractSubscribeService<T extends Subscribe> extends Stan
 	 *            请求对象
 	 * @param subscribe
 	 *            请求订阅对象
-	 * @throws Excepton
+	 * @throws Exception
 	 *             操作异常
 	 */
 	protected void push(Requester requester, Subscribe subscribe) throws Exception {

@@ -18,7 +18,7 @@ public class Message implements Serializable {
 	private Integer id; // 主键
 	private Subscribe subscribe; // 所属订阅
 	private Requester requester; // 订阅对象
-	private Integer pushed = 0; // 已推送次数
+	private Integer resend = 0; // 重发次数
 	private Date dateJoined = new Date(); // 创建时间
 
 	public Integer getId() {
@@ -45,12 +45,12 @@ public class Message implements Serializable {
 		this.requester = requester;
 	}
 
-	public Integer getPushed() {
-		return pushed;
+	public Integer getResend() {
+		return resend;
 	}
 
-	public void setPushed(Integer pushed) {
-		this.pushed = pushed;
+	public void setResend(Integer resend) {
+		this.resend = resend;
 	}
 
 	public Date getDateJoined() {

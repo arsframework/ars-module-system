@@ -1,12 +1,11 @@
 package ars.module.system.service;
 
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.List;
 import java.util.HashMap;
 import java.io.Serializable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.http.client.methods.HttpUriRequest;
 
 import ars.util.Beans;
@@ -39,16 +38,26 @@ import ars.server.timer.AbstractTimerServer;
  */
 public abstract class AbstractSubscribeService<T extends Subscribe> extends StandardGeneralService<T>
 		implements SubscribeService<T>, InvokeListener<InvokeEvent> {
-	public static final Logger logger = LoggerFactory.getLogger(AbstractSubscribeService.class);
-
+	private int batch = 1000; // 消息同步批次
 	private Map<String, T> subscribes; // 请求订阅资源定制/订阅实体映射
 
 	public AbstractSubscribeService() {
 		this.initRefreshServer();
 	}
 
+	public int getBatch() {
+		return batch;
+	}
+
+	public void setBatch(int batch) {
+		if (batch < 1) {
+			throw new IllegalArgumentException("Illegal batch:" + batch);
+		}
+		this.batch = batch;
+	}
+
 	/**
-	 * 初始话消息刷新服务
+	 * 初始化消息刷新服务
 	 */
 	protected void initRefreshServer() {
 		new AbstractTimerServer() {
@@ -132,13 +141,12 @@ public abstract class AbstractSubscribeService<T extends Subscribe> extends Stan
 		try {
 			this.push(requester, subscribe);
 		} catch (Exception e) {
-			logger.error("Message push failure", e);
+			Servers.logger.error("Message synchronization failure", e);
 			Repository<Message> repository = Repositories.getRepository(Message.class);
 			Message message = Beans.getInstance(repository.getModel());
 			message.setSubscribe(subscribe);
 			message.setRequester(requester);
-			message.setPushed(1);
-			Repositories.getRepository(Message.class).save(message);
+			repository.save(message);
 		}
 	}
 
@@ -146,26 +154,27 @@ public abstract class AbstractSubscribeService<T extends Subscribe> extends Stan
 	 * 刷新消息（从数据库获取消息并重新推送，推送成功后删除消息实体）
 	 */
 	protected void refresh() {
-		final Repository<Message> repository = Repositories.getRepository(Message.class);
+		Repository<Message> repository = Repositories.getRepository(Message.class);
 		int count = repository.query().count();
-		for (int page = 1, size = 100, total = (int) Math.ceil((double) count / (double) size); page <= total; page++) {
-			List<Message> messages = repository.query().paging(page, size).asc("id").list();
+		for (int page = 1, total = (int) Math.ceil((double) count / (double) this.batch); page <= total; page++) {
+			List<Message> messages = repository.query().paging(page, this.batch).asc("dateJoined").list();
 			for (final Message message : messages) {
-				Servers.execute(new Runnable() {
+				try {
+					Servers.submit(new Callable<Object>() {
 
-					@Override
-					public void run() {
-						try {
+						@Override
+						public Object call() throws Exception {
 							push(message.getRequester(), message.getSubscribe());
-							repository.delete(message);
-						} catch (Exception e) {
-							logger.error("Message push failure", e);
-							message.setPushed(message.getPushed() + 1);
-							repository.update(message);
+							return null;
 						}
-					}
 
-				});
+					}).get();
+					repository.delete(message);
+				} catch (Exception e) {
+					Servers.logger.error("Message synchronization failure", e);
+					message.setResend(message.getResend() + 1);
+					repository.update(message);
+				}
 			}
 		}
 	}

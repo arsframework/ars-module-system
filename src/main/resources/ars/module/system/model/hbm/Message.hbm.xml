@@ -9,7 +9,7 @@
 		</id>
 		<many-to-one name="subscribe" column="SUBSCRIBE_ID_" class="ars.module.system.model.Subscribe" fetch="join" lazy="false"/>
 		<property name="requester" column="REQUESTER_" type="serializable" not-null="true"/>
-		<property name="pushed" column="PUSHED_" type="int" not-null="true"/>
+		<property name="resend" column="RESEND_" type="int" not-null="true"/>
 		<property name="dateJoined" column="DATE_JOINED_" type="timestamp" not-null="true"/>
 	</class>
 </hibernate-mapping>

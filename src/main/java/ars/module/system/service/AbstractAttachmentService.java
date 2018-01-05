@@ -1,6 +1,7 @@
 package ars.module.system.service;
 
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Map.Entry;
 
 import ars.util.Nfile;
@@ -8,9 +9,11 @@ import ars.util.Beans;
 import ars.util.Strings;
 import ars.server.Servers;
 import ars.file.Operator;
-import ars.file.DiskOperator;
+import ars.file.NameGenerator;
+import ars.file.DirectoryGenerator;
 import ars.file.RandomNameGenerator;
 import ars.file.DateDirectoryGenerator;
+import ars.file.disk.DiskOperator;
 import ars.invoke.request.Requester;
 import ars.module.system.model.Attachment;
 import ars.module.system.service.AttachmentService;
@@ -26,28 +29,12 @@ import ars.database.service.StandardGeneralService;
  */
 public abstract class AbstractAttachmentService<T extends Attachment> extends StandardGeneralService<T>
 		implements AttachmentService<T> {
-	private String defaultDirectory; // 默认文件目录
-	private Operator defaultOperator; // 默认文件操作接口对象
-	private Map<String, Operator> operators; // 文件操作接口对象映射
+	private Map<String, Operator> operators = new HashMap<String, Operator>(); // 文件操作接口对象映射
+	private NameGenerator nameGenerator = new RandomNameGenerator(); // 文件名称生成器
+	private DirectoryGenerator directoryGenerator = new DateDirectoryGenerator(); // 文件目录生成器
 
-	public String getDefaultDirectory() {
-		return defaultDirectory;
-	}
-
-	public void setDefaultDirectory(String defaultDirectory) {
-		this.defaultDirectory = defaultDirectory;
-		DiskOperator operator = new DiskOperator(defaultDirectory);
-		operator.setNameGenerator(new RandomNameGenerator());
-		operator.setDirectoryGenerator(new DateDirectoryGenerator());
-		this.defaultOperator = operator;
-	}
-
-	public Operator getDefaultOperator() {
-		return defaultOperator;
-	}
-
-	public void setDefaultOperator(Operator defaultOperator) {
-		this.defaultOperator = defaultOperator;
+	public AbstractAttachmentService() {
+		this.operators.put("*", new DiskOperator());
 	}
 
 	public Map<String, Operator> getOperators() {
@@ -74,10 +61,7 @@ public abstract class AbstractAttachmentService<T extends Attachment> extends St
 				}
 			}
 		}
-		if (this.defaultOperator == null) {
-			throw new RuntimeException("No matching file operator found:" + path);
-		}
-		return this.defaultOperator;
+		throw new RuntimeException("No matching file operator found:" + path);
 	}
 
 	@Override
@@ -94,7 +78,16 @@ public abstract class AbstractAttachmentService<T extends Attachment> extends St
 	@Override
 	public Attachment upload(Requester requester, Nfile file, Boolean previewable, Boolean downloadable,
 			Map<String, Object> parameters) throws Exception {
-		String path = this.lookupOperator(file.getName()).write(file);
+		String name = file.getName();
+		StringBuilder buffer = new StringBuilder();
+		if (this.directoryGenerator != null) {
+			buffer.append(this.directoryGenerator.generate(name));
+		}
+		if (this.nameGenerator != null) {
+			buffer.append('/').append(this.nameGenerator.generate(name));
+		}
+		String path = buffer.toString();
+		this.lookupOperator(file.getName()).write(file, path);
 		T attachment = Beans.getInstance(this.getModel());
 		attachment.setName(file.getName());
 		attachment.setPath(path);

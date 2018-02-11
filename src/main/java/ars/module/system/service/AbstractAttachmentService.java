@@ -1,8 +1,8 @@
 package ars.module.system.service;
 
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Collections;
 
 import ars.util.Nfile;
 import ars.util.Beans;
@@ -29,13 +29,11 @@ import ars.database.service.StandardGeneralService;
  */
 public abstract class AbstractAttachmentService<T extends Attachment> extends StandardGeneralService<T>
 		implements AttachmentService<T> {
-	private Map<String, Operator> operators = new HashMap<String, Operator>(); // 文件操作接口对象映射
+	public static final Operator DEFAULT_OPERATOR = new DiskOperator(); // 默认文件处理器
+
+	private Map<String, Operator> operators = Collections.emptyMap(); // 文件操作接口对象映射
 	private NameGenerator nameGenerator = new RandomNameGenerator(); // 文件名称生成器
 	private DirectoryGenerator directoryGenerator = new DateDirectoryGenerator(); // 文件目录生成器
-
-	public AbstractAttachmentService() {
-		this.operators.put("*", new DiskOperator());
-	}
 
 	public Map<String, Operator> getOperators() {
 		return operators;
@@ -61,7 +59,7 @@ public abstract class AbstractAttachmentService<T extends Attachment> extends St
 				}
 			}
 		}
-		throw new RuntimeException("No matching file operator found:" + path);
+		return DEFAULT_OPERATOR;
 	}
 
 	@Override

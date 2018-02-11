@@ -40,15 +40,5 @@
 	<bean class="ars.module.system.service.StandardRecyclableService"/>
 	
 	<!-- Attachment Service -->
-	<bean class="ars.module.system.service.StandardAttachmentService">
-		<property name="operators">
-			<map>
-				<entry key="*">
-					<bean class="ars.file.disk.DiskOperator">
-						<property name="workingDirectory" value="../../static/upload/attachment"/>
-					</bean>
-				</entry>
-			</map>
-		</property>
-	</bean>
+	<bean class="ars.module.system.service.StandardAttachmentService"/>
 </beans>

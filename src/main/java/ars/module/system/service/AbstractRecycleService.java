@@ -38,7 +38,7 @@ public abstract class AbstractRecycleService<T extends Recycle> extends Standard
 
 	@Override
 	public void clear(Requester requester, Map<String, Object> parameters) {
-		List<T> histories = this.getQuery(requester, parameters).list();
+		List<T> histories = this.getQuery(requester).custom(parameters).list();
 		for (int i = 0; i < histories.size(); i++) {
 			this.deleteObject(requester, histories.get(i));
 		}
@@ -47,7 +47,7 @@ public abstract class AbstractRecycleService<T extends Recycle> extends Standard
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void restore(Requester requester, Map<String, Object> parameters) throws Exception {
-		List<T> recycles = this.getQuery(requester, parameters).list();
+		List<T> recycles = this.getQuery(requester).custom(parameters).list();
 		for (int i = 0; i < recycles.size(); i++) {
 			T recycle = recycles.get(i);
 			Object entity = recycle.getEntity();

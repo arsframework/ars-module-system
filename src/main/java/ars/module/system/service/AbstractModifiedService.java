@@ -1,14 +1,12 @@
 package ars.module.system.service;
 
 import java.util.Map;
-import java.io.Serializable;
 
 import ars.util.Beans;
 import ars.util.Strings;
 import ars.invoke.request.Requester;
 import ars.module.system.model.Modified;
 import ars.module.system.service.ModifiedService;
-import ars.database.repository.Repository;
 import ars.database.repository.Repositories;
 import ars.database.service.event.UpdateEvent;
 import ars.database.service.event.ServiceListener;
@@ -41,8 +39,6 @@ public abstract class AbstractModifiedService<T extends Modified> extends Standa
 	 *            请求对象
 	 * @param model
 	 *            数据模型
-	 * @param id
-	 *            数据主键
 	 * @param before
 	 *            更新前实体
 	 * @param after
@@ -50,10 +46,10 @@ public abstract class AbstractModifiedService<T extends Modified> extends Standa
 	 * @param different
 	 *            更新数据项
 	 */
-	protected void record(Requester requester, Class<?> model, Serializable id, Object before, Object after,
+	protected void record(Requester requester, Class<?> model, Object before, Object after,
 			Map<String, Object[]> different) {
 		T modified = Beans.getInstance(this.getModel());
-		modified.setKey(id.toString());
+		modified.setKey(Repositories.getIdentifier(after).toString());
 		modified.setModel(model.getName());
 		modified.setDifferent(different);
 		this.saveObject(requester, modified);
@@ -61,16 +57,14 @@ public abstract class AbstractModifiedService<T extends Modified> extends Standa
 
 	@Override
 	public void onServiceEvent(UpdateEvent event) {
-		Object entity = event.getEntity();
 		Class<?> model = event.getService().getModel();
 		if (!Modified.class.isAssignableFrom(model)
 				&& (this.pattern == null || Strings.matches(model.getName(), this.pattern))) {
-			Repository<?> repository = Repositories.getRepository(model);
-			Serializable id = (Serializable) Beans.getValue(entity, repository.getPrimary());
-			Object before = repository.get(id);
-			Map<String, Object[]> different = Beans.getDifferent(before, entity, Beans.getFields(model));
+			Object entity = event.getEntity();
+			Object original = event.getOriginal();
+			Map<String, Object[]> different = Beans.getDifferent(entity, original, Beans.getFields(model));
 			if (!different.isEmpty()) {
-				record(event.getSource(), model, id, before, entity, different);
+				record(event.getSource(), model, original, entity, different);
 			}
 		}
 	}

@@ -43,7 +43,7 @@ public abstract class AbstractOperatedService<T extends Operated> extends Standa
 	protected void record(Requester requester, Object value) {
 		boolean failed = value instanceof Throwable;
 		Map<String, Object> parameters = requester.getParameters();
-		String parameter = parameters.isEmpty() ? null : Strings.format(requester.getParameters());
+		String parameter = parameters.isEmpty() ? null : Strings.format(parameters);
 		String message = failed ? Beans.getThrowableCause(((Throwable) value)).getMessage() : Strings.toString(value);
 
 		T operated = Beans.getInstance(this.getModel());

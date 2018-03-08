@@ -1,7 +1,5 @@
 package ars.module.system.service;
 
-import java.util.Map;
-
 import ars.invoke.local.Api;
 import ars.invoke.request.Requester;
 import ars.module.system.model.Recycle;
@@ -23,23 +21,19 @@ public interface RecycleService<T extends Recycle> extends SearchService<T>, Del
 	 * 
 	 * @param requester
 	 *            请求对象
-	 * @param parameters
-	 *            请求参数
 	 */
 	@Api("clear")
-	public void clear(Requester requester, Map<String, Object> parameters);
+	public void clear(Requester requester);
 
 	/**
 	 * 数据恢复
 	 * 
 	 * @param requester
 	 *            请求对象
-	 * @param parameters
-	 *            请求参数
 	 * @throws Exception
 	 *             操作异常
 	 */
 	@Api("restore")
-	public void restore(Requester requester, Map<String, Object> parameters) throws Exception;
+	public void restore(Requester requester) throws Exception;
 
 }

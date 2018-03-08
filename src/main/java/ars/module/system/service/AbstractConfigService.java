@@ -1,6 +1,5 @@
 package ars.module.system.service;
 
-import java.util.Map;
 import java.util.Map.Entry;
 
 import ars.util.Strings;
@@ -22,20 +21,20 @@ public abstract class AbstractConfigService<T extends Config> extends StandardGe
 		implements ConfigService<T> {
 
 	@Override
-	public String get(Requester requester, String key, Map<String, Object> parameters) {
+	public String get(Requester requester, String key) {
 		return ((ConfigRepository<T>) this.getRepository()).get(key);
 	}
 
 	@Override
-	public void set(Requester requester, Map<String, Object> parameters) {
+	public void set(Requester requester) {
 		ConfigRepository<T> repository = (ConfigRepository<T>) this.getRepository();
-		for (Entry<String, Object> entry : parameters.entrySet()) {
+		for (Entry<String, Object> entry : requester.getParameters().entrySet()) {
 			repository.set(entry.getKey(), Strings.toString(entry.getValue()));
 		}
 	}
 
 	@Override
-	public void remove(Requester requester, String[] keys, Map<String, Object> parameters) {
+	public void remove(Requester requester, String[] keys) {
 		ConfigRepository<T> repository = (ConfigRepository<T>) this.getRepository();
 		for (String key : keys) {
 			repository.remove(key);

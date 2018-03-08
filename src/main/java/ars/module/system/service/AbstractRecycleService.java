@@ -1,6 +1,5 @@
 package ars.module.system.service;
 
-import java.util.Map;
 import java.util.List;
 
 import ars.invoke.request.Requester;
@@ -37,8 +36,8 @@ public abstract class AbstractRecycleService<T extends Recycle> extends Standard
 	}
 
 	@Override
-	public void clear(Requester requester, Map<String, Object> parameters) {
-		List<T> histories = this.getQuery(requester).custom(parameters).list();
+	public void clear(Requester requester) {
+		List<T> histories = this.getQuery(requester).list();
 		for (int i = 0; i < histories.size(); i++) {
 			this.deleteObject(requester, histories.get(i));
 		}
@@ -46,8 +45,8 @@ public abstract class AbstractRecycleService<T extends Recycle> extends Standard
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void restore(Requester requester, Map<String, Object> parameters) throws Exception {
-		List<T> recycles = this.getQuery(requester).custom(parameters).list();
+	public void restore(Requester requester) throws Exception {
+		List<T> recycles = this.getQuery(requester, true).custom(requester.getParameters()).list();
 		for (int i = 0; i < recycles.size(); i++) {
 			T recycle = recycles.get(i);
 			Object entity = recycle.getEntity();

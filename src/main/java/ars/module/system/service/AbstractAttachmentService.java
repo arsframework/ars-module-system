@@ -74,8 +74,8 @@ public abstract class AbstractAttachmentService<T extends Attachment> extends St
 	}
 
 	@Override
-	public Attachment upload(Requester requester, Nfile file, Boolean previewable, Boolean downloadable,
-			Map<String, Object> parameters) throws Exception {
+	public Attachment upload(Requester requester, Nfile file, Boolean previewable, Boolean downloadable)
+			throws Exception {
 		String name = file.getName();
 		StringBuilder buffer = new StringBuilder();
 		if (this.directoryGenerator != null) {
@@ -99,8 +99,8 @@ public abstract class AbstractAttachmentService<T extends Attachment> extends St
 	}
 
 	@Override
-	public Nfile download(final Requester requester, Map<String, Object> parameters) throws Exception {
-		final T attachment = this.object(requester, parameters);
+	public Nfile download(final Requester requester) throws Exception {
+		final T attachment = this.object(requester);
 		if (attachment == null) {
 			return null;
 		} else if (attachment.getDownloadable() != Boolean.TRUE) {
@@ -128,8 +128,8 @@ public abstract class AbstractAttachmentService<T extends Attachment> extends St
 	}
 
 	@Override
-	public Nfile preview(final Requester requester, Map<String, Object> parameters) throws Exception {
-		final T attachment = this.object(requester, parameters);
+	public Nfile preview(final Requester requester) throws Exception {
+		final T attachment = this.object(requester);
 		if (attachment == null) {
 			return null;
 		} else if (attachment.getPreviewable() != Boolean.TRUE) {

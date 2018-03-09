@@ -1,15 +1,18 @@
 package ars.module.system.service;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.List;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
 import java.io.Serializable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.client.methods.HttpUriRequest;
 
 import ars.util.Beans;
-import ars.server.Servers;
+import ars.util.Servers;
+import ars.util.AbstractTimerServer;
 import ars.invoke.remote.Remotes;
 import ars.invoke.remote.Protocol;
 import ars.invoke.request.Requester;
@@ -26,7 +29,6 @@ import ars.module.system.service.SubscribeService;
 import ars.database.repository.Repository;
 import ars.database.repository.Repositories;
 import ars.database.service.StandardGeneralService;
-import ars.server.timer.AbstractTimerServer;
 
 /**
  * 请求订阅业务操作抽象实现
@@ -40,6 +42,7 @@ public abstract class AbstractSubscribeService<T extends Subscribe> extends Stan
 		implements SubscribeService<T>, InvokeListener<InvokeEvent> {
 	private int batch = 1000; // 消息同步批次
 	private Map<String, T> subscribes; // 请求订阅资源定制/订阅实体映射
+	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public AbstractSubscribeService() {
 		this.initRefreshServer();
@@ -141,7 +144,7 @@ public abstract class AbstractSubscribeService<T extends Subscribe> extends Stan
 		try {
 			this.push(requester, subscribe);
 		} catch (Exception e) {
-			Servers.logger.error("Message synchronization failure", e);
+			this.logger.error("Message synchronization failed", e);
 			Repository<Message> repository = Repositories.getRepository(Message.class);
 			Message message = Beans.getInstance(repository.getModel());
 			message.setSubscribe(subscribe);
@@ -171,7 +174,7 @@ public abstract class AbstractSubscribeService<T extends Subscribe> extends Stan
 					}).get();
 					repository.delete(message);
 				} catch (Exception e) {
-					Servers.logger.error("Message synchronization failure", e);
+					this.logger.error("Message synchronization failed", e);
 					message.setResend(message.getResend() + 1);
 					repository.update(message);
 				}

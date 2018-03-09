@@ -4,7 +4,7 @@
 
 	<groupId>com.arsframework</groupId>
 	<artifactId>ars-module-system</artifactId>
-	<version>1.1.8</version>
+	<version>1.1.9</version>
 	<packaging>jar</packaging>
 
 	<name>ars-module-system</name>
@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>com.arsframework</groupId>
 			<artifactId>ars-core</artifactId>
-			<version>1.5.2</version>
+			<version>1.6.1</version>
 			<scope>provided</scope>
 		</dependency>
 

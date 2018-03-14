@@ -1,6 +1,8 @@
 package ars.module.system.service;
 
+import java.io.File;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.Collections;
 
@@ -8,11 +10,13 @@ import ars.util.Nfile;
 import ars.util.Beans;
 import ars.util.Strings;
 import ars.util.Servers;
+import ars.util.Streams;
 import ars.file.Operator;
 import ars.file.NameGenerator;
 import ars.file.DirectoryGenerator;
 import ars.file.RandomNameGenerator;
 import ars.file.DateDirectoryGenerator;
+import ars.file.office.Converts;
 import ars.file.disk.DiskOperator;
 import ars.invoke.request.Requester;
 import ars.module.system.model.Attachment;
@@ -135,7 +139,33 @@ public abstract class AbstractAttachmentService<T extends Attachment> extends St
 		} else if (attachment.getPreviewable() != Boolean.TRUE) {
 			throw new RuntimeException("Attachment is not previewable:" + attachment);
 		}
-		return this.lookupOperator(attachment.getPath()).preview(attachment.getPath());
+		String path = attachment.getPath();
+		Operator operator = this.lookupOperator(path);
+		if (!operator.exists(path)) {
+			return null;
+		}
+		if (path.toLowerCase().endsWith(".swf")) {
+			return operator.read(path);
+		}
+		String swf = path + ".temp.swf";
+		if (!operator.exists(swf)) {
+			synchronized (swf.intern()) {
+				if (!operator.exists(swf)) {
+					Nfile input = operator.read(path);
+					File source = new File(Strings.TEMP_PATH, UUID.randomUUID().toString() + input.getName());
+					File target = new File(Strings.TEMP_PATH, UUID.randomUUID().toString() + input.getName());
+					try {
+						Streams.write(input, source);
+						Converts.file2swf(source, target);
+						operator.write(target, swf);
+					} finally {
+						source.delete();
+						target.delete();
+					}
+				}
+			}
+		}
+		return operator.read(swf);
 	}
 
 }

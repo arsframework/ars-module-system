@@ -4,35 +4,34 @@ import ars.database.model.AbstractModel;
 
 /**
  * 可回收数据模型
- * 
- * @author yongqiangwu
- * 
+ *
+ * @author wuyongqiang
  */
 public class Recyclable extends AbstractModel {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String model; // 数据模型
-	private String icon; // 模型图标
+    private String model; // 数据模型
+    private String icon; // 模型图标
 
-	public String getModel() {
-		return model;
-	}
+    public String getModel() {
+        return model;
+    }
 
-	public void setModel(String model) {
-		this.model = model;
-	}
+    public void setModel(String model) {
+        this.model = model;
+    }
 
-	public String getIcon() {
-		return icon;
-	}
+    public String getIcon() {
+        return icon;
+    }
 
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 
-	@Override
-	public String toString() {
-		return this.model == null ? super.toString() : this.model;
-	}
+    @Override
+    public String toString() {
+        return this.model == null ? super.toString() : this.model;
+    }
 
 }

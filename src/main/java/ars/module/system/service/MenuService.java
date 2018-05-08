@@ -7,11 +7,9 @@ import ars.database.service.BasicService;
 
 /**
  * 菜单业务操作接口
- * 
- * @author yongqiangwu
- * 
- * @param <T>
- *            数据模型
+ *
+ * @param <T> 数据模型
+ * @author wuyongqiang
  */
 @Api("system/menu")
 public interface MenuService<T extends Menu> extends BasicService<T>, TreeService<T> {

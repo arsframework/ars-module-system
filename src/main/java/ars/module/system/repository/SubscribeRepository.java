@@ -5,11 +5,9 @@ import ars.database.repository.Repository;
 
 /**
  * 请求订阅数据操作接口
- * 
- * @author yongqiangwu
  *
- * @param <T>
- *            数据模型
+ * @param <T> 数据模型
+ * @author wuyongqiang
  */
 public interface SubscribeRepository<T extends Subscribe> extends Repository<T> {
 

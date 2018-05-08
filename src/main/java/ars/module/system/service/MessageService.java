@@ -7,11 +7,9 @@ import ars.database.service.DeleteService;
 
 /**
  * 订阅消息业务操作接口
- * 
- * @author yongqiangwu
  *
- * @param <T>
- *            数据模型
+ * @param <T> 数据模型
+ * @author wuyongqiang
  */
 @Api("system/message")
 public interface MessageService<T extends Message> extends SearchService<T>, DeleteService<T> {
